@@ -6,11 +6,24 @@ local root_dir = paths.directory(paths.directory(PANDOC_SCRIPT_FILE))
 
 local search_paths = {
     package.path,
-    paths.join({ root_dir, "modules", "LibDeflate", "?.lua" })
+    paths.join({ root_dir, "modules", "LibDeflate", "?.lua" }),
+    paths.join({ root_dir, "config", "?.lua" })
 }
 package.path = table.concat(search_paths, ";")
 
 local libDeflate = require("LibDeflate")
+
+-- load plantuml server configurations
+local config_loaded, pu_config = pcall(function() return (require "config-plantuml").config() end)
+if not config_loaded then
+    io.stderr:write("use default settings ...\n")
+    pu_config = { protocol = "http", host_name = "localhost", port = 8080 , format = "png" }
+end
+
+pu_config.protocol = pu_config.protocol or "http"
+pu_config.host_name = pu_config.host_name or "localhost"
+pu_config.port = pu_config.port or "8080"
+pu_config.format = pu_config.format or "png"
 
 -- @type number -> string
 local function encode6(b)
@@ -74,8 +87,22 @@ return {
         CodeBlock = function(el) 
             local encoded_text = encode(el.text)
 
-            el.text = el.text .. "\n" .. encoded_text
-            return el
+            local url = string.format("%s://%s:%s/%s/%s", pu_config.protocol, pu_config.host_name, pu_config.port, pu_config.format, encoded_text)
+            local mt, img = mediabags.fetch(url)
+
+            -- TODO: error checking...
+
+            -- write to file
+            local filename = string.format("%s.%s", utils.sha1(encoded_text), pu_config.format)
+            local image_file_path = paths.join({"example/images", filename})
+            local fs = io.open(image_file_path, "w")
+            fs:write(img)
+            fs:close()
+
+            -- replace tag
+            local img_el = pandoc.Image({}, filename, "")
+
+            return pandoc.Para { img_el }
         end
     }
 }

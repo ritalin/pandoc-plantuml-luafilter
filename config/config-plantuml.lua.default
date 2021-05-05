@@ -1,0 +1,9 @@
+local function config()
+    return {
+        protocol = "http",
+        host_name = "localhost",
+        port = 8080,
+        format = "png" -- supported 'png', 'svg' and 'txt'
+    }
+end
+return { config = config }
