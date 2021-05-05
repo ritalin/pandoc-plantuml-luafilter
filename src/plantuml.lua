@@ -104,9 +104,20 @@ return {
             local fs = io.open(image_file_path, "w")
             fs:write(img)
             fs:close()
+            
+            local image_src = image_file_path
+
+            if PANDOC_STATE.output_file ~= nil then
+                if string.match(FORMAT, "html") then 
+                    local output_dir = paths.directory(PANDOC_STATE.output_file)
+
+                    -- output relative
+                    image_src = paths.make_relative(image_file_path, output_dir)
+                end
+            end
 
             -- replace tag
-            local img_el = pandoc.Image({}, image_file_path, "")
+            local img_el = pandoc.Image({}, image_src, "")
 
             return pandoc.Para { img_el }
         end
