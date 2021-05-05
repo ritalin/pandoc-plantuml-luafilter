@@ -85,6 +85,10 @@ end
 return {
     {
         CodeBlock = function(el) 
+            if el.classes[1] ~= "plantuml" then
+                return el
+            end
+
             local encoded_text = encode(el.text)
 
             local url = string.format("%s://%s:%s/%s/%s", pu_config.protocol, pu_config.host_name, pu_config.port, pu_config.format, encoded_text)
