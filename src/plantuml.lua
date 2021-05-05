@@ -92,9 +92,11 @@ return {
 
             -- TODO: error checking...
 
+            local resource_dir = PANDOC_STATE.resource_path[1] or ""
+
             -- write to file
             local filename = string.format("%s.%s", utils.sha1(encoded_text), pu_config.format)
-            local image_file_path = paths.join({"example/images", filename})
+            local image_file_path = paths.join({resource_dir, filename})
             local fs = io.open(image_file_path, "w")
             fs:write(img)
             fs:close()
