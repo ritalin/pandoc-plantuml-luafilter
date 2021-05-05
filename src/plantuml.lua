@@ -100,7 +100,7 @@ return {
             fs:close()
 
             -- replace tag
-            local img_el = pandoc.Image({}, filename, "")
+            local img_el = pandoc.Image({}, image_file_path, "")
 
             return pandoc.Para { img_el }
         end
