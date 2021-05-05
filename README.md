@@ -9,7 +9,7 @@ Please use online web (http://www.plantuml.com/plantuml/), or launch locally.
 And docker compose configuration file is included into `docker` folder in ihis repository.
 Rename configuration file name to `docker-compose.yml` to loaunch a docker image.
 
-### docker compose usage:
+### docker compose usage
 
 ```
 % docker-compose -f docker/docker-compose.yml -d up 
@@ -28,7 +28,7 @@ This file is settings for PlantUML sever.
     * PlantUML service port number
 * format 
     * generated file format
-    * supported 'png', 'svg' and 'txt'
+    * supports 'png', 'svg' and 'txt'
 
 ### PlantUML codeblock in markdown 
 
